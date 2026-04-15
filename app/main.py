@@ -7,14 +7,14 @@ class IntegerRange:
         self.min_value = min_value
         self.max_value = max_value
 
-    def __set_name__(self, owner, method_name) -> None:
+    def __set_name__(self, owner: Any, method_name: Any) -> None:
         self.protected_name = "_" + method_name
 
-    def __get__(self, instance, owner) -> Any:
+    def __get__(self, instance: Any, owner: Any) -> Any:
         value = getattr(instance, self.protected_name)
         return value
 
-    def __set__(self, instance, value) -> None:
+    def __set__(self, instance: Any, value: Any) -> None:
         if not isinstance(value, int):
             raise TypeError
         if self.min_value <= value <= self.max_value:
