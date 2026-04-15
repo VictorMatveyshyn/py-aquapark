@@ -4,8 +4,8 @@ from typing import Any
 
 class IntegerRange:
     def __init__(self, min_value: int, max_value: int) -> None:
-        self.min_value = min_value
-        self.max_value = max_value
+        self.min_amount = min_value
+        self.max_amount = max_value
 
     def __set_name__(self, owner: Any, method_name: Any) -> None:
         self.protected_name = "_" + method_name
@@ -17,7 +17,7 @@ class IntegerRange:
     def __set__(self, instance: Any, value: Any) -> None:
         if not isinstance(value, int):
             raise TypeError
-        if self.min_value <= value <= self.max_value:
+        if self.min_amount <= value <= self.max_amount:
             setattr(instance, self.protected_name, value)
         else:
             raise ValueError
@@ -53,11 +53,13 @@ class AdultSlideLimitationValidator(SlideLimitationValidator):
 class Slide:
     def __init__(self, name: str, limitation_class: Any) -> None:
         self.name = name
+        if not issubclass(limitation_class, SlideLimitationValidator):
+            raise TypeError
         self.limitation_class = limitation_class
 
     def can_access(self, person: Visitor) -> bool:
         try:
             self.limitation_class(person.age, person.weight, person.height)
-        except (TypeError, ValueError):
+        except Exception:
             return False
         return True
